@@ -219,6 +219,7 @@ module.exports = function(
 
   console.log();
   console.log(`Success! Created ${appName} at ${appPath}`);
+  console.log(chalk.red('VERY IMPORTANT:'));
   console.log('Inside that directory, you can run several commands:');
   console.log();
   console.log(chalk.cyan(`  ${displayedCommand} start`));
@@ -243,6 +244,7 @@ module.exports = function(
   );
   console.log();
   console.log('We suggest that you begin by typing:');
+  console.log('https://github.com/leomYili/create-react-app-scripts-custom');
   console.log();
   console.log(chalk.cyan('  cd'), cdpath);
   console.log(`  ${chalk.cyan(`${displayedCommand} start`)}`);
