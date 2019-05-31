@@ -1,44 +1,41 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+> 本项目来源于[Create React App](repo)(https://github.com/facebook/create-react-app).
 
-## Available Scripts
+# 简介
 
-In the project directory, you can run:
+请使用**node6.X**之上版本进行打包,本脚手架内使用webpack4进行打包
+
+## 脚手架命令
+
+该包用于可视化界面工具系统项目目录及打包脚手架构建,具体命令如下:
 
 ### `npm start`
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+启动本地开发环境命令 <br>
+在默认浏览器中打开 [http://localhost:3000](http://localhost:3000).
 
 ### `npm test`
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+启动本地测试环境命令 <br>
+打开命令行软件进入调试模式 [running tests](https://facebook.github.io/create-react-app/docs/running-tests).
 
-### `npm run build`
+### `npm run build-XX`
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+使用`build`命令进行打包 <br>
+在本项目中会根据线上环境分为release以及prod,对应线上开发(测试)环境,以及正式线上环境. <br>
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+* release:线上测试环境,用于对接真实接口,数据库为内部数据库
+* master:正式线上环境,用于对接
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+在打包时会对代码进行压缩,release环境会附带map地图,而prod环境则为最简化形式进行打包,并自动去除**console**
+
+更多信息可以查看 [deployment](https://facebook.github.io/create-react-app/docs/deployment).
+
+### `npm run build --report`
+
+在构建时进行依赖分析,使用`--report`参数打开一个额外的页面进行查看,默认为3001
 
 ### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+**强烈不建议使用eject进行解包,如果脚手架本身有问题,可访问该项目进行修改,并上传至npm进行使用**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+当脚手架缺失功能时,可新增issues进行说明.

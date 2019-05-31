@@ -21,17 +21,32 @@
 ### `npm run build-XX`
 
 使用`build`命令进行打包 <br>
-在本项目中会根据线上环境分为dev以及prod,对应线上开发(测试)环境,以及正式线上环境. <br>
+在本项目中会根据线上环境分为release以及prod,对应线上开发(测试)环境,以及正式线上环境. <br>
 
-* dev:线上测试环境,用于对接真实接口,数据库为内部数据库
-* prod:正式线上环境,用于对接
+* release:线上测试环境,用于对接真实接口,数据库为内部数据库
+* master:正式线上环境,用于对接
 
-在打包时会对代码进行压缩,dev环境会附带map地图,而prod环境则为最简化形式进行打包,并自动去除**console**
+在打包时会对代码进行压缩,release环境会附带map地图,而prod环境则为最简化形式进行打包,并自动去除**console**
 
 更多信息可以查看 [deployment](https://facebook.github.io/create-react-app/docs/deployment).
+
+### `npm run analyze`
+
+在构建之后进行依赖分析
 
 ### `npm run eject`
 
 **强烈不建议使用eject进行解包,如果脚手架本身有问题,可访问该项目进行修改,并上传至npm进行使用**
-
 当脚手架缺失功能时,可新增issues进行说明.
+
+## proxy API requests
+
+可以在`package.json`文件中使用该方法进行代理,例如:
+
+```(proxy)
+  "proxy": "http://localhost:4000",
+```
+
+这样，当您fetch('/api/todos')处于开发阶段时，开发服务器将识别出它不是静态资产，并将您的请求`http://localhost:4000/api/todos`作为后备代理。开发服务器将仅尝试将不在text/html其Accept标头中的请求发送到代理。
+
+方便的是，这可以避免开发中的CORS问题和错误消息：

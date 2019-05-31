@@ -1,7 +1,30 @@
-# react-scripts
+# axis-react-scripts
 
-This package includes scripts and configuration used by [Create React App](https://github.com/facebook/create-react-app).<br>
-Please refer to its documentation:
+Latest version of original react-scripts: **3.0.1**
 
-- [Getting Started](https://facebook.github.io/create-react-app/docs/getting-started) – How to create a new app.
-- [User Guide](https://facebook.github.io/create-react-app/) – How to develop apps bootstrapped with Create React App.
+## 💡Features:
+
+* Decorators
+* babel-plugin-import
+* Less
+* Sass
+* CSS modules
+* Sass modules
+* Less modules
+* multi entry
+
+**the features are optional and can be turned on/off individually*
+
+## ⚠️ **Please Note:**
+
+Reactor-app-rewired is used in this project to support multiple portals and other rules that cannot be specified in scaffolding, but still be configured using a unified .env file.
+
+### ❔How to use it
+
+```create-react-app my-app --scripts-version axis-react-scripts```
+
+### bundle analyzer
+
+Visualize size of webpack output files with an interactive zoomable treemap.
+use: `npm run build-XX --report`
+Manually open `http://localhost:8888`

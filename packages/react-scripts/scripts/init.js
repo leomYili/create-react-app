@@ -95,9 +95,12 @@ module.exports = function(
 
   // Setup the script rules
   appPackage.scripts = {
-    start: 'react-scripts start',
-    build: 'react-scripts build',
-    test: 'react-scripts test',
+    analyze: "source-map-explorer 'build/static/js/*.js'",
+    start: 'react-app-rewired start --scripts-version axis-react-scripts',
+    build: 'react-app-rewired build --scripts-version axis-react-scripts',
+    'build-release': 'REACT_APP_WHICH_APP=release npm run build',
+    'build-master': 'REACT_APP_WHICH_APP=master npm run build',
+    test: 'react-app-rewired test --scripts-version axis-react-scripts',
     eject: 'react-scripts eject',
   };
 
@@ -226,9 +229,12 @@ module.exports = function(
   console.log('    Starts the development server.');
   console.log();
   console.log(
-    chalk.cyan(`  ${displayedCommand} ${useYarn ? '' : 'run '}build`)
+    chalk.cyan(`  ${displayedCommand} ${useYarn ? '' : 'run '}build-XX`)
   );
   console.log('    Bundles the app into static files for production.');
+  console.log(
+    '    (ps:"-release" is online development environment; "-master" is online formal environment)'
+  );
   console.log();
   console.log(chalk.cyan(`  ${displayedCommand} test`));
   console.log('    Starts the test runner.');
@@ -244,7 +250,6 @@ module.exports = function(
   );
   console.log();
   console.log('We suggest that you begin by typing:');
-  console.log('https://github.com/leomYili/create-react-app-scripts-custom');
   console.log();
   console.log(chalk.cyan('  cd'), cdpath);
   console.log(`  ${chalk.cyan(`${displayedCommand} start`)}`);
@@ -257,7 +262,9 @@ module.exports = function(
     );
   }
   console.log();
-  console.log('Happy hacking!');
+  console.log(
+    'Happy hacking!(QA:https://github.com/leomYili/create-react-app-scripts-custom)'
+  );
 };
 
 function isReactInstalled(appPackage) {
