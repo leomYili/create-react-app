@@ -97,6 +97,7 @@ module.exports = function(
   appPackage.scripts = {
     analyze: "source-map-explorer 'build/static/js/*.js'",
     start: 'react-app-rewired start --scripts-version axis-react-scripts',
+    "start-dashboard": "webpack-dashboard -- npm run start",
     build: 'react-app-rewired build --scripts-version axis-react-scripts',
     'build-release': 'REACT_APP_WHICH_APP=release npm run build',
     'build-master': 'REACT_APP_WHICH_APP=master npm run build',
@@ -253,6 +254,7 @@ module.exports = function(
   console.log();
   console.log(chalk.cyan('  cd'), cdpath);
   console.log(`  ${chalk.cyan(`${displayedCommand} start`)}`);
+  console.log(`  or ${chalk.cyan(`${displayedCommand} run start-dashboard`)}`);
   if (readmeExists) {
     console.log();
     console.log(

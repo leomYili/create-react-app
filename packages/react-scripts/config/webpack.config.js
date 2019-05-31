@@ -42,6 +42,7 @@ const postcssNormalize = require('postcss-normalize');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
 const CompressionPlugin = require('compression-webpack-plugin');
+const DashboardPlugin = require('webpack-dashboard/plugin');
 
 // Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap =
@@ -727,6 +728,7 @@ module.exports = function(webpackEnv) {
           formatter: isEnvProduction ? typescriptFormatter : undefined,
         }),
       getCustomConfig('bundle_analyzer') && new BundleAnalyzerPlugin(),
+      new DashboardPlugin()
     ].filter(Boolean),
     // Some libraries import Node modules but don't use them in the browser.
     // Tell Webpack to provide empty mocks for them so importing them works.
