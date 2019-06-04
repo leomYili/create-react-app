@@ -1,6 +1,10 @@
 import React from 'react';
-import logo from './logo.svg';
+import logo from '../logo.svg';
 import './App.css';
+
+import { Typography, Spin } from 'antd';
+
+const { Title, Paragraph } = Typography;
 
 const App: React.FC = () => {
   return (
@@ -10,6 +14,20 @@ const App: React.FC = () => {
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
         </p>
+        <Spin />
+          <Paragraph
+            editable={{
+              onChange: function(str) {
+                console.log('Content change:', str);
+              },
+            }}
+            style={{
+              color: '#ffffff',
+              fontSize: '16',
+            }}
+          >
+            this is apply...
+          </Paragraph>
         <a
           className="App-link"
           href="https://reactjs.org"

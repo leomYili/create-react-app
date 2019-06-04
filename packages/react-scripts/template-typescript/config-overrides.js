@@ -1,10 +1,6 @@
 /* config-overrides.js */
-const multipleEntry = require('react-app-rewire-multiple-entry')([
-  {
-    entry: 'src/index.js',
-    template: 'public/index.html',
-    outPath: '/index.html',
-  },
+const path = require('path');
+const multipleEntry = require('axis-react-app-rewire-multiple-entry')([
   {
     entry: 'src/admin.js',
     template: 'public/index.html',
@@ -14,11 +10,21 @@ const multipleEntry = require('react-app-rewire-multiple-entry')([
 
 module.exports = {
   webpack: function(config, env) {
-    multipleEntry.addMultiEntry(config);
+    config = multipleEntry.addMultiEntry(config);
+
+    // ant icons import (https://github.com/ant-design/ant-design/issues/12011)
+    config.resolve.alias['@ant-design/icons/lib/dist$'] = path.resolve(
+      __dirname,
+      './src/assets/antIcons.js'
+    );
+
     return config;
   },
   devServer: function(configFunction) {
-    multipleEntry.addEntryProxy(configFunction);
-    return configFunction;
+    return function(proxy, allowedHost) {
+      const config = configFunction(proxy, allowedHost);
+
+      return multipleEntry.addEntryProxy(config);
+    };
   },
 };

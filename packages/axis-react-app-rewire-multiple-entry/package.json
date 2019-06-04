@@ -1,0 +1,55 @@
+{
+  "name": "axis-react-app-rewire-multiple-entry",
+  "version": "1.1.2",
+  "description": "Multiple Entry Support for Create-React-App",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --fix ."
+  },
+  "engines": {
+    "node": ">=6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Derek-Hu/react-app-rewire-multiple-entry.git"
+  },
+  "homepage": "https://github.com/Derek-Hu/react-app-rewire-multiple-entry#readme",
+  "keywords": [
+    "reacte",
+    "create-react-app",
+    "react-app-rewire",
+    "rewire",
+    "multi",
+    "multiple",
+    "entry",
+    "webpack"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/leomYili/create-react-app-scripts-custom/issues"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{json,css,md}": [
+      "prettier --single-quote --write",
+      "git add"
+    ],
+    "*.{js}": [
+      "prettier --single-quote --write",
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "devDependencies": {
+    "eslint": "^5.14.1",
+    "eslint-plugin-node": "^8.0.0",
+    "husky": "^1.3.1",
+    "lint-staged": "^8.1.4",
+    "prettier": "^1.16.4"
+  }
+}
