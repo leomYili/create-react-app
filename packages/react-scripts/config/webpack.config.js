@@ -392,8 +392,9 @@ module.exports = function(webpackEnv) {
                   [
                     'babel-plugin-named-asset-import',
                     'babel-preset-react-app',
+                    'babel-plugin-import',
                     'react-dev-utils',
-                    'react-scripts',
+                    'axis-react-scripts',
                   ]
                 ),
                 // @remove-on-eject-end
@@ -417,7 +418,11 @@ module.exports = function(webpackEnv) {
                   ],
                   [
                     require.resolve('@babel/plugin-proposal-decorators'),
-                    { decoratorsBeforeExport: true },
+                    { legacy: true },
+                  ],
+                  [
+                    require.resolve('@babel/plugin-proposal-class-properties'),
+                    { loose: true },
                   ],
                 ],
                 // This is a feature of `babel-loader` for webpack (not Babel itself).
@@ -454,8 +459,9 @@ module.exports = function(webpackEnv) {
                   [
                     'babel-plugin-named-asset-import',
                     'babel-preset-react-app',
+                    'babel-plugin-import',
                     'react-dev-utils',
-                    'react-scripts',
+                    'axis-react-scripts',
                   ]
                 ),
                 // @remove-on-eject-end

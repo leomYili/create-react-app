@@ -1,6 +1,6 @@
 {
   "name": "axis-react-scripts",
-  "version": "2.3.9",
+  "version": "2.4.1",
   "description": "leomYili Configuration and scripts for Create React App.repo as 3.0.1",
   "repository": {
     "type": "git",
@@ -29,7 +29,9 @@
   "types": "./lib/react-app.d.ts",
   "dependencies": {
     "@babel/core": "7.4.3",
-    "@babel/plugin-proposal-decorators": "^7.4.4",
+    "@babel/plugin-proposal-class-properties": "^7.4.3",
+    "@babel/plugin-proposal-decorators": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
     "@svgr/webpack": "4.2.0",
     "@typescript-eslint/eslint-plugin": "1.6.0",
     "@typescript-eslint/parser": "1.6.0",
