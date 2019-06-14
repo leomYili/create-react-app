@@ -1,6 +1,6 @@
 {
   "name": "axis-react-scripts",
-  "version": "2.4.1",
+  "version": "2.4.5",
   "description": "leomYili Configuration and scripts for Create React App.repo as 3.0.1",
   "repository": {
     "type": "git",
@@ -39,6 +39,7 @@
     "babel-jest": "^24.8.0",
     "babel-loader": "8.0.5",
     "babel-plugin-import": "^1.11.2",
+    "babel-plugin-lodash": "^3.3.4",
     "babel-plugin-named-asset-import": "^0.3.2",
     "babel-preset-react-app": "^9.0.0",
     "camelcase": "^5.2.0",
@@ -66,7 +67,10 @@
     "jest-watch-typeahead": "0.3.0",
     "less": "^3.9.0",
     "less-loader": "^5.0.0",
+    "lodash": "^4.17.11",
+    "lodash-webpack-plugin": "^0.11.5",
     "mini-css-extract-plugin": "0.5.0",
+    "moment": "^2.24.0",
     "node-sass": "^4.12.0",
     "optimize-css-assets-webpack-plugin": "5.0.1",
     "pnp-webpack-plugin": "1.2.1",

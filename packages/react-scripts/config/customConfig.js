@@ -3,6 +3,7 @@
 const defaultConfig = {
   BUNDLE_ANALYZER: false,
   COMPRESSION: true,
+  IMPORT_LODASH: true,
   DLL_VENDOR: ['react', 'react-dom'],
   OUT_PUT_FILE_HASH_TYPE: '[name].[contenthash:8]',
 };

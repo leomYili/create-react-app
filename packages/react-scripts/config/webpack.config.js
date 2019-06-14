@@ -43,6 +43,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
 const CompressionPlugin = require('compression-webpack-plugin');
 const DashboardPlugin = require('webpack-dashboard/plugin');
+const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 // Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap =
@@ -99,7 +100,13 @@ module.exports = function(webpackEnv) {
   // common function to get style loaders
   const getStyleLoaders = (cssOptions, preProcessor, options) => {
     const loaders = [
-      isEnvDevelopment && require.resolve('style-loader'),
+      isEnvDevelopment && {
+        loader: MiniCssExtractPlugin.loader,
+        options:{
+          hmr: true,
+          reloadAll: true
+        }
+      },
       isEnvProduction && {
         loader: MiniCssExtractPlugin.loader,
         options: shouldUseRelativeAssetPaths ? { publicPath: '../../' } : {},
@@ -399,6 +406,7 @@ module.exports = function(webpackEnv) {
                 ),
                 // @remove-on-eject-end
                 plugins: [
+                  ['lodash'],
                   [
                     require.resolve('babel-plugin-named-asset-import'),
                     {
@@ -655,6 +663,11 @@ module.exports = function(webpackEnv) {
       // See https://github.com/facebook/create-react-app/issues/186
       isEnvDevelopment &&
         new WatchMissingNodeModulesPlugin(paths.appNodeModules),
+      isEnvDevelopment &&
+        new MiniCssExtractPlugin({
+          filename: '[name].css',
+          chunkFilename: '[id]'.css,
+        }),
       isEnvProduction &&
         new MiniCssExtractPlugin({
           // Options similar to the same options in webpackOptions.output
@@ -735,6 +748,7 @@ module.exports = function(webpackEnv) {
         }),
       getCustomConfig('bundle_analyzer') && new BundleAnalyzerPlugin(),
       new DashboardPlugin(),
+      getCustomConfig('import_lodash') && new LodashModuleReplacementPlugin(),
     ].filter(Boolean),
     // Some libraries import Node modules but don't use them in the browser.
     // Tell Webpack to provide empty mocks for them so importing them works.
