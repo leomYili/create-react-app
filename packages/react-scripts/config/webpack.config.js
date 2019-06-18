@@ -44,6 +44,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
 const CompressionPlugin = require('compression-webpack-plugin');
 const DashboardPlugin = require('webpack-dashboard/plugin');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 // Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap =
@@ -102,10 +103,10 @@ module.exports = function(webpackEnv) {
     const loaders = [
       isEnvDevelopment && {
         loader: MiniCssExtractPlugin.loader,
-        options:{
+        options: {
           hmr: true,
-          reloadAll: true
-        }
+          reloadAll: true,
+        },
       },
       isEnvProduction && {
         loader: MiniCssExtractPlugin.loader,
@@ -273,6 +274,16 @@ module.exports = function(webpackEnv) {
                   annotation: true,
                 }
               : false,
+          },
+        }),
+        new UglifyJsPlugin({
+          uglifyOptions: {
+            extractComments: true,
+            compress: {
+              warnings: false,
+              drop_debugger: true,
+              drop_console: getCustomConfig('drop_console'),
+            },
           },
         }),
       ],
