@@ -45,6 +45,7 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const DashboardPlugin = require('webpack-dashboard/plugin');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
 
 // Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap =
@@ -278,9 +279,9 @@ module.exports = function(webpackEnv) {
         }),
         new UglifyJsPlugin({
           uglifyOptions: {
+            warnings: false,
             extractComments: true,
             compress: {
-              warnings: false,
               drop_debugger: true,
               drop_console: getCustomConfig('drop_console'),
             },
@@ -292,7 +293,30 @@ module.exports = function(webpackEnv) {
       // https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366
       splitChunks: {
         chunks: 'all',
-        name: false,
+        name: true,
+        maxInitialRequests: 5,
+        cacheGroups: {
+          polyfill: {
+            test: /[\\/]node_modules[\\/](core-js|raf|@babel|babel)[\\/]/,
+            name: 'polyfill',
+            priority: 2,
+            chunks: 'all',
+            reuseExistingChunk: true,
+          },
+          dll: {
+            test: /[\\/]node_modules[\\/](react|react-dom|prop-types|mobx|mobx-react|redux|react-redux)[\\/]/,
+            name: 'dll',
+            priority: 1,
+            chunks: 'all',
+            reuseExistingChunk: true,
+          },
+          commons: {
+            name: 'commons',
+            minChunks: 2,
+            chunks: 'all',
+            reuseExistingChunk: true,
+          },
+        },
       },
       // Keep the runtime chunk separated to enable long term caching
       // https://twitter.com/wSokra/status/969679223278505985
@@ -676,11 +700,17 @@ module.exports = function(webpackEnv) {
         new WatchMissingNodeModulesPlugin(paths.appNodeModules),
       isEnvDevelopment &&
         new MiniCssExtractPlugin({
+          ignoreOrder: true,
           filename: '[name].css',
           chunkFilename: '[id]'.css,
         }),
+      isEnvDevelopment &&
+        new FilterWarningsPlugin({
+          exclude: /mini-css-extract-plugin[^]*Conflicting order between:/,
+        }),
       isEnvProduction &&
         new MiniCssExtractPlugin({
+          ignoreOrder: true,
           // Options similar to the same options in webpackOptions.output
           // both options are optional
           filename: `static/css/${getCustomConfig(
@@ -776,5 +806,8 @@ module.exports = function(webpackEnv) {
     // Turn off performance processing because we utilize
     // our own hints via the FileSizeReporter
     performance: false,
+    stats: {
+      warningsFilter: warning => /Conflicting order between/gm.test(warning),
+    },
   };
 };

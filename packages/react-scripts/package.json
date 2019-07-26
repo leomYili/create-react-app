@@ -1,6 +1,6 @@
 {
   "name": "axis-react-scripts",
-  "version": "2.4.6",
+  "version": "2.5.0",
   "description": "leomYili Configuration and scripts for Create React App.repo as 3.0.1",
   "repository": {
     "type": "git",
@@ -96,6 +96,7 @@
     "webpack-bundle-analyzer": "^3.3.2",
     "webpack-dashboard": "^3.0.7",
     "webpack-dev-server": "3.2.1",
+    "webpack-filter-warnings-plugin": "^1.2.1",
     "webpack-manifest-plugin": "2.0.4",
     "workbox-webpack-plugin": "4.2.0"
   },
