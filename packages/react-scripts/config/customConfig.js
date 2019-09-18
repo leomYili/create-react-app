@@ -2,6 +2,7 @@
 
 const defaultConfig = {
   BUNDLE_ANALYZER: false,
+  SOURCE_MAP: false,
   COMPRESSION: true,
   IMPORT_LODASH: true,
   DROP_CONSOLE: true,

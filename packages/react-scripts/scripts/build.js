@@ -39,6 +39,7 @@ const configFactory = require('../config/webpack.config');
 const paths = require('../config/paths');
 const checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
 const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
+const newFormatWebpckMessages = require('../config/newFormatWebpackMessages');
 const printHostingInstructions = require('react-dev-utils/printHostingInstructions');
 const FileSizeReporter = require('react-dev-utils/FileSizeReporter');
 const printBuildError = require('react-dev-utils/printBuildError');
@@ -51,6 +52,11 @@ const useYarn = fs.existsSync(paths.yarnLockFile);
 // These sizes are pretty large. We'll warn for bundles exceeding them.
 const WARN_AFTER_BUNDLE_GZIP_SIZE = 512 * 1024;
 const WARN_AFTER_CHUNK_GZIP_SIZE = 1024 * 1024;
+
+const shouldUseApplicationStore =
+  process.env['REACT_APP_APPLICATION_STORE_URL'] != undefined
+    ? process.env['REACT_APP_APPLICATION_STORE_URL']
+    : '';
 
 const isInteractive = process.stdout.isTTY;
 
@@ -69,12 +75,20 @@ checkBrowsers(paths.appPath, isInteractive)
   .then(() => {
     // First, read the current file sizes in build directory.
     // This lets us display how much they changed later.
-    return measureFileSizesBeforeBuild(paths.appBuild);
+    return measureFileSizesBeforeBuild(
+      shouldUseApplicationStore !== ''
+        ? paths.appRunTimeBuild + '/' + shouldUseApplicationStore + '/build'
+        : paths.appBuild
+    );
   })
   .then(previousFileSizes => {
     // Remove all content but keep the directory so that
     // if you're in it, you don't end up in Trash
-    fs.emptyDirSync(paths.appBuild);
+    fs.emptyDirSync(
+      shouldUseApplicationStore !== ''
+        ? paths.appRunTimeBuild + '/' + shouldUseApplicationStore + '/build'
+        : paths.appBuild
+    );
     // Merge with the public folder
     copyPublicFolder();
     // Start the webpack build
@@ -103,7 +117,9 @@ checkBrowsers(paths.appPath, isInteractive)
       printFileSizesAfterBuild(
         stats,
         previousFileSizes,
-        paths.appBuild,
+        shouldUseApplicationStore !== ''
+          ? paths.appRunTimeBuild + '/' + shouldUseApplicationStore + '/build'
+          : paths.appBuild,
         WARN_AFTER_BUNDLE_GZIP_SIZE,
         WARN_AFTER_CHUNK_GZIP_SIZE
       );
@@ -112,7 +128,12 @@ checkBrowsers(paths.appPath, isInteractive)
       const appPackage = require(paths.appPackageJson);
       const publicUrl = paths.publicUrl;
       const publicPath = config.output.publicPath;
-      const buildFolder = path.relative(process.cwd(), paths.appBuild);
+      const buildFolder = path.relative(
+        process.cwd(),
+        shouldUseApplicationStore !== ''
+          ? paths.appRunTimeBuild + '/' + shouldUseApplicationStore + '/build'
+          : paths.appBuild
+      );
       printHostingInstructions(
         appPackage,
         publicUrl,
@@ -124,6 +145,9 @@ checkBrowsers(paths.appPath, isInteractive)
     err => {
       console.log(chalk.red('Failed to compile.\n'));
       printBuildError(err);
+      if (process.env.REACT_APP_SERVER_APP === 'server') {
+        console.error(err);
+      }
       process.exit(1);
     }
   )
@@ -148,6 +172,13 @@ function build(previousFileSizes) {
     console.log();
   }
 
+  if (process.env.REACT_APP_SERVER_APP === 'server') {
+    process.on('SIGINT', error => {
+      console.log('message');
+      process.exit(1);
+    });
+  }
+
   console.log('Creating an optimized production build...');
 
   const compiler = webpack(config);
@@ -166,6 +197,11 @@ function build(previousFileSizes) {
         messages = formatWebpackMessages(
           stats.toJson({ all: false, warnings: true, errors: true })
         );
+        if (process.env.REACT_APP_SERVER_APP === 'server') {
+          messages = newFormatWebpckMessages(
+            stats.toJson({ all: false, warnings: true, errors: true })
+          );
+        }
       }
       if (messages.errors.length) {
         // Only keep the first error. Others are often indicative
@@ -200,8 +236,14 @@ function build(previousFileSizes) {
 }
 
 function copyPublicFolder() {
-  fs.copySync(paths.appPublic, paths.appBuild, {
-    dereference: true,
-    filter: file => file !== paths.appHtml,
-  });
+  fs.copySync(
+    paths.appPublic,
+    shouldUseApplicationStore !== ''
+      ? paths.appRunTimeBuild + '/' + shouldUseApplicationStore + '/build'
+      : paths.appBuild,
+    {
+      dereference: true,
+      filter: file => file !== paths.appHtml,
+    }
+  );
 }

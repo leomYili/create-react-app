@@ -46,11 +46,13 @@ const DashboardPlugin = require('webpack-dashboard/plugin');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
+const WebpackBar = require('webpackbar');
 
 // Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap =
-  process.env['REACT_APP_WHICH_APP'] !== 'master' &&
-  process.env.GENERATE_SOURCEMAP !== 'false';
+  (process.env['REACT_APP_WHICH_APP'] !== 'master' &&
+    process.env.GENERATE_SOURCEMAP !== 'false') ||
+  getCustomConfig('bundle_analyzer');
 // Some apps do not need the benefits of saving a web request, so not inlining the chunk
 // makes for a smoother build process.
 const shouldInlineRuntimeChunk = process.env.INLINE_RUNTIME_CHUNK !== 'false';
@@ -71,6 +73,11 @@ const sassModuleRegex = /\.module\.(scss|sass)$/;
 module.exports = function(webpackEnv) {
   const isEnvDevelopment = webpackEnv === 'development';
   const isEnvProduction = webpackEnv === 'production';
+
+  const shouldUseApplicationStore =
+    process.env['REACT_APP_APPLICATION_STORE_URL'] != undefined
+      ? process.env['REACT_APP_APPLICATION_STORE_URL']
+      : '';
 
   // Webpack uses `publicPath` to determine where the app is being served from.
   // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -187,7 +194,11 @@ module.exports = function(webpackEnv) {
     ].filter(Boolean),
     output: {
       // The build folder.
-      path: isEnvProduction ? paths.appBuild : undefined,
+      path: isEnvProduction
+        ? shouldUseApplicationStore !== ''
+          ? paths.appRunTimeBuild + '/' + shouldUseApplicationStore + '/build'
+          : paths.appBuild
+        : undefined,
       // Add /* filename */ comments to generated require()s in the output.
       pathinfo: isEnvDevelopment,
       // There will be one main bundle, and one file per asynchronous chunk.
@@ -277,7 +288,7 @@ module.exports = function(webpackEnv) {
               : false,
           },
         }),
-        new UglifyJsPlugin({
+        /* new UglifyJsPlugin({
           uglifyOptions: {
             warnings: false,
             extractComments: true,
@@ -286,7 +297,7 @@ module.exports = function(webpackEnv) {
               drop_console: getCustomConfig('drop_console'),
             },
           },
-        }),
+        }), */
       ],
       // Automatically split vendor and commons
       // https://twitter.com/wSokra/status/969633336732905474
@@ -704,10 +715,9 @@ module.exports = function(webpackEnv) {
           filename: '[name].css',
           chunkFilename: '[id]'.css,
         }),
-      isEnvDevelopment &&
-        new FilterWarningsPlugin({
-          exclude: /mini-css-extract-plugin[^]*Conflicting order between:/,
-        }),
+      new FilterWarningsPlugin({
+        exclude: /mini-css-extract-plugin[^]*Conflicting order between:/,
+      }),
       isEnvProduction &&
         new MiniCssExtractPlugin({
           ignoreOrder: true,
@@ -790,6 +800,19 @@ module.exports = function(webpackEnv) {
       getCustomConfig('bundle_analyzer') && new BundleAnalyzerPlugin(),
       new DashboardPlugin(),
       getCustomConfig('import_lodash') && new LodashModuleReplacementPlugin(),
+      isEnvProduction &&
+        process.env.REACT_APP_SERVER_APP === 'server' &&
+        new WebpackBar({
+          profile: true,
+          reporter: {
+            progress(context) {
+              // Called when build progress updated
+              if (process.env.REACT_APP_SERVER_APP === 'server') {
+                console.log(JSON.stringify(context.state));
+              }
+            },
+          },
+        }),
     ].filter(Boolean),
     // Some libraries import Node modules but don't use them in the browser.
     // Tell Webpack to provide empty mocks for them so importing them works.
