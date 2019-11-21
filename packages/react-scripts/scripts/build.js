@@ -58,6 +58,12 @@ const shouldUseApplicationStore =
     ? process.env['REACT_APP_APPLICATION_STORE_URL']
     : '';
 
+const shouldUseApplicationPreview =
+  process.env['REACT_APP_TEST_IF'] != undefined &&
+  process.env['REACT_APP_WHICH_APP'] === 'release'
+    ? true
+    : false;
+
 const isInteractive = process.stdout.isTTY;
 
 // Warn and crash if required files are missing

@@ -99,8 +99,11 @@ module.exports = function(
     start: 'react-app-rewired start --scripts-version axis-react-scripts',
     'start-dashboard': 'webpack-dashboard -- npm run start',
     build: 'react-app-rewired build --scripts-version axis-react-scripts',
-    'build-release': 'NODE_ENV=development REACT_APP_WHICH_APP=release npm run build',
+    'build-release':
+      'NODE_ENV=development REACT_APP_WHICH_APP=release npm run build',
     'build-master': 'REACT_APP_WHICH_APP=master npm run build',
+    'server-build-release':
+      'REACT_APP_TEST_IF=true REACT_APP_WHICH_APP=release REACT_APP_SERVER_APP=server npm run build-release',
     'server-build-master':
       'REACT_APP_WHICH_APP=master REACT_APP_SERVER_APP=server npm run server-build',
     test: 'react-app-rewired test --scripts-version axis-react-scripts',

@@ -79,6 +79,12 @@ module.exports = function(webpackEnv) {
       ? process.env['REACT_APP_APPLICATION_STORE_URL']
       : '';
 
+  const shouldUseApplicationPreview =
+    process.env['REACT_APP_TEST_IF'] != undefined &&
+    process.env['REACT_APP_WHICH_APP'] === 'release'
+      ? true
+      : false;
+
   // Webpack uses `publicPath` to determine where the app is being served from.
   // It requires a trailing slash, or the file assets will get an incorrect path.
   // In development, we always serve from the root. This makes config easier.
@@ -170,7 +176,7 @@ module.exports = function(webpackEnv) {
       ? shouldUseSourceMap
         ? 'source-map'
         : false
-      : isEnvDevelopment && 'cheap-module-source-map',
+      : isEnvDevelopment && 'source-map',
     // These are the "entry points" to our application.
     // This means they will be the "root" imports that are included in JS bundle.
     entry: [
@@ -800,8 +806,7 @@ module.exports = function(webpackEnv) {
       getCustomConfig('bundle_analyzer') && new BundleAnalyzerPlugin(),
       new DashboardPlugin(),
       getCustomConfig('import_lodash') && new LodashModuleReplacementPlugin(),
-      isEnvProduction &&
-        process.env.REACT_APP_SERVER_APP === 'server' &&
+      process.env.REACT_APP_SERVER_APP === 'server' &&
         new WebpackBar({
           profile: true,
           reporter: {
