@@ -4,10 +4,12 @@
 
 ## 💡Decorators:
 
-- [@decorateFunc](#decorateFunc)
-- [@nonenumerable](#nonenumerable)
-- [@override](#override)
-- [@persistence](persistence)
+- [axis-decorator](#axis-decorator)
+  - [💡Decorators:](#decorators)
+    - [decorateFunc(Methods)](#decoratefuncmethods)
+    - [nonenumerable(Property)](#nonenumerableproperty)
+    - [override(Methods)](#overridemethods)
+    - [persistence(Property)](#persistenceproperty)
 
 ### decorateFunc(Methods)
 

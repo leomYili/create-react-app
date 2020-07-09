@@ -42,10 +42,9 @@ const postcssNormalize = require('postcss-normalize');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
 const CompressionPlugin = require('compression-webpack-plugin');
-const DashboardPlugin = require('webpack-dashboard/plugin');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
+//const ParallelUglifyPlugin = require('webpack-parallel-uglify-plugin');
 const WebpackBar = require('webpackbar');
 
 // Source maps are resource heavy and can cause out of memory issue for large source files.
@@ -276,7 +275,7 @@ module.exports = function(webpackEnv) {
           parallel: !isWsl,
           // Enable file caching
           cache: true,
-          sourceMap: shouldUseSourceMap,
+          sourceMap: false,
         }),
         // This is only used in production mode
         new OptimizeCSSAssetsPlugin({
@@ -294,13 +293,19 @@ module.exports = function(webpackEnv) {
               : false,
           },
         }),
-        /* new UglifyJsPlugin({
-          uglifyOptions: {
-            warnings: false,
-            extractComments: true,
+        /* new ParallelUglifyPlugin({
+          // 多进程压缩
+          cacheDir: '.cache/',
+          uglifyJS: {
+            output: {
+              comments: false,
+              beautify: false,
+            },
             compress: {
               drop_debugger: true,
               drop_console: getCustomConfig('drop_console'),
+              collapse_vars: true,
+              reduce_vars: true,
             },
           },
         }), */
@@ -311,26 +316,32 @@ module.exports = function(webpackEnv) {
       splitChunks: {
         chunks: 'all',
         name: true,
-        maxInitialRequests: 5,
+        maxInitialRequests: 3,
         cacheGroups: {
           polyfill: {
-            test: /[\\/]node_modules[\\/](core-js|raf|@babel|babel)[\\/]/,
+            test: module => {
+              return /core-js|raf|@babel|babel/.test(module.context);
+            },
             name: 'polyfill',
             priority: 2,
             chunks: 'all',
             reuseExistingChunk: true,
           },
           dll: {
-            test: /[\\/]node_modules[\\/](react|react-dom|prop-types|mobx|mobx-react|redux|react-redux)[\\/]/,
+            test: module => {
+              return /react|react-dom|redux|prop-types|mobx|mobx-react|redux|react-redux/.test(
+                module.context
+              );
+            },
             name: 'dll',
-            priority: 1,
+            priority: 3,
             chunks: 'all',
             reuseExistingChunk: true,
           },
           commons: {
             name: 'commons',
             minChunks: 2,
-            chunks: 'all',
+            chunks: 'initial',
             reuseExistingChunk: true,
           },
         },
@@ -344,7 +355,7 @@ module.exports = function(webpackEnv) {
       // We placed these paths second because we want `node_modules` to "win"
       // if there are any conflicts. This matches Node resolution mechanism.
       // https://github.com/facebook/create-react-app/issues/253
-      modules: ['node_modules', paths.appNodeModules].concat(
+      modules: ['node_modules', paths.appNodeModules, paths.appSrc].concat(
         modules.additionalModulePaths || []
       ),
       // These are the reasonable defaults supported by the Node ecosystem.
@@ -430,6 +441,7 @@ module.exports = function(webpackEnv) {
             {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
               include: paths.appSrc,
+              exclude: /(node_modules)/,
               loader: require.resolve('babel-loader'),
               options: {
                 customize: require.resolve(
@@ -804,7 +816,6 @@ module.exports = function(webpackEnv) {
           formatter: isEnvProduction ? typescriptFormatter : undefined,
         }),
       getCustomConfig('bundle_analyzer') && new BundleAnalyzerPlugin(),
-      new DashboardPlugin(),
       getCustomConfig('import_lodash') && new LodashModuleReplacementPlugin(),
       process.env.REACT_APP_SERVER_APP === 'server' &&
         new WebpackBar({
